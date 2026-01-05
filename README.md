@@ -31,3 +31,10 @@
 ```bash
 git clone [https://github.com/LLM-VLM-GSL/AHA.git](https://github.com/LLM-VLM-GSL/AHA.git)
 cd AHA
+```
+2. **Install Packages**
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
