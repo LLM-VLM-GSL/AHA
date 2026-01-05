@@ -34,7 +34,7 @@
 
 2. **Install Dependencies:**
    ```bash
-   conda create -n aha python=3.10 -y
+   conda create -n aha python=3.13 -y
    conda activate aha
    pip install -r requirements.txt
    ```
