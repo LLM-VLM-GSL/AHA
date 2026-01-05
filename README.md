@@ -87,10 +87,10 @@ print(processor.batch_decode(generate_ids, skip_special_tokens=True))
 
 ## 📝 Citation
 ```bibtex
-@article{chen2024aha,
+@article{chen2025aha,
   title={AHA: Aligning Large Audio-Language Models for Reasoning Hallucinations via Counterfactual Hard Negatives},
-  author={Chen, Yanxi and others},
+  author={Chen, Yanxi and Zhu, Wenhui and Chen, Xiwen and Wang, Zhipeng and Li, Xin and Qiu, Peijie and Wang, Hao and Dong, Xuanzhao and Xiong, Yujian and Schneider, Anderson and others},
   journal={arXiv preprint arXiv:2512.24052},
-  year={2024}
+  year={2025}
 }
 ```
