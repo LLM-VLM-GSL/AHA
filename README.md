@@ -62,16 +62,23 @@ The dataset is structured to help the model distinguish between what *sounds* pl
 ## 💻 Inference
 
 ```python
+from transformers import Qwen2_5OmniThinkerForConditionalGeneration, Qwen2_5OmniProcessor
+from peft import PeftModel
+from qwen_omni_utils import process_mm_info
 import torch
-from transformers import Qwen2AudioForConditionalGeneration, AutoProcessor
-import librosa
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-model_id = "ASU-GSL/Qwen-Audio-AHA"
+model_id = "Qwen/Qwen2.5-Omni-7B"
+adapter_id = "ASU-GSL/Qwen-Audio-AHA"
 
-# Load Model
-model = Qwen2AudioForConditionalGeneration.from_pretrained(model_id, torch_dtype="auto").to(device)
-processor = AutoProcessor.from_pretrained(model_id)
+# Load base model and processor
+processor = Qwen2_5OmniProcessor.from_pretrained(model_id)
+model = Qwen2_5OmniThinkerForConditionalGeneration.from_pretrained(
+    model_id, torch_dtype="auto", device_map="auto"
+)
+
+# Load LoRA adapter
+model = PeftModel.from_pretrained(model, adapter_id)
 
 # Load Audio
 audio, _ = librosa.load("example.wav", sr=processor.feature_extractor.sampling_rate)
@@ -80,7 +87,7 @@ inputs = processor(text=prompt, audios=audio, return_tensors="pt").to(device)
 
 # Generate
 generate_ids = model.generate(**inputs, max_new_tokens=256)
-print(processor.batch_decode(generate_ids, skip_special_tokens=True))
+print(processor.batch_decode(generate_ids, skip_special_tokens=True))[0]
 ```
 
 ---
