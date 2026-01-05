@@ -1,7 +1,7 @@
 # AHA: Aligning Large Audio-Language Models for Reasoning Hallucinations via Counterfactual Hard Negatives
 
 <p align="center">
-    <img src="https://github.com/LLM-VLM-GSL/AHA/blob/main/assets/logo.png" width="200">
+    <img src="https://github.com/LLM-VLM-GSL/AHA/blob/main/assets/logo.png" width="200" alt="AHA Logo">
 </p>
 
 [![Project Page](https://img.shields.io/badge/Project-Page-Green)](https://github.com/LLM-VLM-GSL/AHA)
@@ -10,31 +10,87 @@
 [![Dataset](https://img.shields.io/badge/HuggingFace-Dataset-orange)](https://huggingface.co/datasets/ASU-GSL/AHA)
 
 ## 🚀 News
-* **[2024.12]** We release **Qwen-Audio-AHA**, the dataset, and the inference code!
+* **[2024.12]** We release **Qwen-Audio-AHA**, the dataset, and the inference code! 
 * **[2024.12]** Our paper **"AHA: Aligning Large Audio-Language Models for Reasoning Hallucinations via Counterfactual Hard Negatives"** is available on [arXiv](https://arxiv.org/abs/2512.24052).
 
 ---
 
 ## 💡 Highlights
-**AHA (Audio Hallucination Alignment)** is a unified framework designed to mitigate hallucinations in Large Audio-Language Models (LALMs).
+**AHA (Audio Hallucination Alignment)** is a unified framework designed to mitigate hallucinations in Large Audio-Language Models (LALMs) by focusing on fine-grained temporal reasoning and counterfactual alignment.
 
-* **Fine-grained Taxonomy:** We identify four core hallucination types: Event Omission, False Event Identity, Temporal Relation Error, and Quantitative Temporal Error.
-* **Counterfactual Hard Negative Mining:** A novel pipeline to construct preference pairs that force models to ground responses in actual acoustic evidence rather than linguistic priors.
-* **AHA-Eval:** A rigorous diagnostic benchmark for fine-grained temporal and causal reasoning in audio.
-* **Superior Performance:** Significant improvements over base models (e.g., +13.7% on AHA-Eval) and competitive results on public benchmarks like MMAU and MMAR.
+* **Hallucination Taxonomy:** We deconstruct LALM failures into four dimensions: Event Omission, False Event Identity, Temporal Relation Error, and Quantitative Temporal Error.
+* **Counterfactual Hard Negative Mining:** A novel pipeline to construct high-quality preference data, forcing models to distinguish strict acoustic evidence from linguistically plausible fabrications.
+* **AHA-Eval:** A diagnostic benchmark to rigorously test fine-grained temporal and causal reasoning in the audio modality.
 
 ---
 
 ## 🛠 Installation
 
-1. **Clone the repository and navigate to the AHA folder**
-```bash
-git clone [https://github.com/LLM-VLM-GSL/AHA.git](https://github.com/LLM-VLM-GSL/AHA.git)
-cd AHA
-```
-2. **Install Packages**
-```bash
-pip install --upgrade pip
-pip install -r requirements.txt
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/LLM-VLM-GSL/AHA.git](https://github.com/LLM-VLM-GSL/AHA.git)
+   cd AHA
+   ```
+
+2. **Install Dependencies:**
+   ```bash
+   conda create -n aha python=3.10 -y
+   conda activate aha
+   pip install -r requirements.txt
+   ```
+
+---
+
+## 🤗 Model Zoo
+
+| Model | Base Model | Training Data | Checkpoint |
+| :--- | :--- | :--- | :--- |
+| **Qwen-Audio-AHA** | Qwen-Audio | AHA Preference Dataset | [HF Link](https://huggingface.co/ASU-GSL/Qwen-Audio-AHA) |
+
+---
+
+## 📊 Dataset: AHA
+
+The AHA dataset is specifically curated to address reasoning hallucinations in audio tasks. It includes high-quality instruction-following data and counterfactual preference pairs.
+
+* **Dataset Link:** [ASU-GSL/AHA](https://huggingface.co/datasets/ASU-GSL/AHA)
+
+The dataset is structured to help the model distinguish between what *sounds* plausible and what is *actually* present in the audio stream.
+
+---
+
+## 💻 Inference
+
+```python
+import torch
+from transformers import Qwen2AudioForConditionalGeneration, AutoProcessor
+import librosa
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model_id = "ASU-GSL/Qwen-Audio-AHA"
+
+# Load Model
+model = Qwen2AudioForConditionalGeneration.from_pretrained(model_id, torch_dtype="auto").to(device)
+processor = AutoProcessor.from_pretrained(model_id)
+
+# Load Audio
+audio, _ = librosa.load("example.wav", sr=processor.feature_extractor.sampling_rate)
+prompt = "<|audio|>\nDescribe the temporal order of events in this audio."
+inputs = processor(text=prompt, audios=audio, return_tensors="pt").to(device)
+
+# Generate
+generate_ids = model.generate(**inputs, max_new_tokens=256)
+print(processor.batch_decode(generate_ids, skip_special_tokens=True))
 ```
 
+---
+
+## 📝 Citation
+```bibtex
+@article{chen2024aha,
+  title={AHA: Aligning Large Audio-Language Models for Reasoning Hallucinations via Counterfactual Hard Negatives},
+  author={Chen, Yanxi and others},
+  journal={arXiv preprint arXiv:2512.24052},
+  year={2024}
+}
+```
