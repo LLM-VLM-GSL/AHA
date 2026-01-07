@@ -1,8 +1,6 @@
 # AHA: Aligning Large Audio-Language Models for Reasoning Hallucinations via Counterfactual Hard Negatives
 
-<p align="center">
-    <img src="https://github.com/LLM-VLM-GSL/AHA/blob/main/assets/logo.png" width="200" alt="AHA Logo">
-</p>
+
 
 [![Project Page](https://img.shields.io/badge/Project-Page-Green)](https://github.com/LLM-VLM-GSL/AHA)
 [![Arxiv](https://img.shields.io/badge/Arxiv-2512.24052-red)](https://arxiv.org/abs/2512.24052)
